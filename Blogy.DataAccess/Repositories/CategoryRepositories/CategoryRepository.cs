@@ -1,0 +1,18 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Blogy.DataAccess.Context;
+using Blogy.DataAccess.Repositories.GenericRepositories;
+using Blogy.Entity.Entities;
+
+namespace Blogy.DataAccess.Repositories.CategoryRepositories
+{
+    public class CategoryRepository : GenericRepository<Category>, ICategoryRepository
+    {
+        public CategoryRepository(AppDbContext context) : base(context)
+        {
+        }
+    }
+}
