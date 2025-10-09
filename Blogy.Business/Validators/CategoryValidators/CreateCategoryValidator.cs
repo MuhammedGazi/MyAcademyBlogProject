@@ -8,6 +8,7 @@ namespace Blogy.Business.Validators.CategoryValidators
         public CreateCategoryValidator()
         {
             RuleFor(RuleFor => RuleFor.Name).NotEmpty().WithMessage("Category ismi boş geçilemez");
+            RuleFor(RuleFor => RuleFor.Name).MinimumLength(3).WithMessage("Category ismi en az 3 karakter olmalı");
             RuleFor(RuleFor => RuleFor.Name).MaximumLength(50).WithMessage("Category ismi en fazla 50 karakter olabilir");
         }
     }

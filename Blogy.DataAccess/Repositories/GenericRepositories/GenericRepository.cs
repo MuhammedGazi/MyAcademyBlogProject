@@ -47,6 +47,7 @@ public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEnt
     public async Task UpdateAsync(TEntity entity)
     {
         _context.Update(entity);
+        _context.Entry(entity).Property(x => x.CreatedDate).IsModified = false;
         await _context.SaveChangesAsync();
     }
 }
