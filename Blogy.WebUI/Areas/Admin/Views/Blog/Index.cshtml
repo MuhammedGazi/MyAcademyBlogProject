@@ -23,12 +23,13 @@
             <th>@count</th>
             <td><img src="@item.CoverImage" style="height:75px;width:75px" />   @item.Title</td>
             <td>@item.Description</td>
-            <td>@item.CategoryId</td>
+            <td>@item.Category.CategoryName</td>
             <td>
-                <a href="/Admin/Blog/DeleteBlog/@item.Id" class="btn btn-danger">Sil</a>
+                <a href="/Admin/Blog/DeleteBlog/@item.Id" onclick="return confirm('emin misin?')" class="btn btn-danger">Sil</a>
                 <a href="/Admin/Blog/UpdateBlog/@item.Id" class="btn btn-info">Güncelle</a>
             </td>
         </tr>
 	}
 </table>
+<a href="/Admin/Blog/CreateBlog" class="btn btn-primary">Yeni Blog Ekle</a>
 
