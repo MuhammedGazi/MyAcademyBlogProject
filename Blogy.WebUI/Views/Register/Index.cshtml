@@ -1,0 +1,38 @@
+﻿@model RegisterDto
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/UILayout/Index.cshtml";
+}
+<div class="container">
+<h3>YENİ KULLANICI KAYDI </h3>
+
+<form method="post">
+    <div class="form-group">
+        <label>Adınız</label>
+        <input type="text" class="form-control" asp-for="FirstName" required/>
+    </div>
+    <div class="form-group">
+        <label>soyadınız</label>
+        <input type="text" class="form-control" asp-for="LastName" required />
+    </div>
+    <div class="form-group">
+        <label>kullanıcı Adınız</label>
+        <input type="text" class="form-control" asp-for="UserName" required />
+    </div>
+    <div class="form-group">
+        <label>email adresiniz</label>
+        <input type="email" class="form-control" asp-for=Email" required />
+    </div>
+    <div class="form-group">
+        <label>Şifreniz</label>
+        <input type="password" class="form-control" asp-for="Password" required />
+    </div>
+    <div class="form-group">
+        <label>Şifrenizi tekrar giriniz</label>
+        <input type="password" class="form-control" asp-for="ConfirmPassword" required />
+    </div>
+    <br />
+    <span class="text-danger">@Html.ValidationSummary()</span>
+    <button class="btn btn-outline-primary" >Kayıt ol</button>
+</form>
+</div>
