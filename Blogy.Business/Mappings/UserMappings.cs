@@ -13,7 +13,8 @@ namespace Blogy.Business.Mappings
     {
         public UserMappings()
         {
-            CreateMap<AppUser, ResultUserDto>().ForMember(dest => dest.FullName, opt => opt.MapFrom(src => string.Join(" ", src.FirtName, src.LastName)));
+            CreateMap<AppUser, ResultUserDto>()
+                .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => string.Join(" ", src.FirtName, src.LastName)));
             //ResultUserDto içinde FullName için işlem yapacağımı bunun içine de appuserde gelen firstname ve lastname yi birleştir maple diyoruz
         }
     }

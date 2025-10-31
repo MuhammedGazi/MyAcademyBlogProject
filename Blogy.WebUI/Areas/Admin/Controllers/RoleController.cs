@@ -18,16 +18,24 @@ namespace Blogy.WebUI.Areas.Admin.Controllers
             return View();
         }
         [HttpPost]
-        public async Task<IActionResult> CreateRole(AppRole model) 
+        public async Task<IActionResult> CreateRole(AppRole model)
         {
-            var result=await _roleManager.CreateAsync(model);
-            if (!result.Succeeded) {
+            var result = await _roleManager.CreateAsync(model);
+            if (!result.Succeeded)
+            {
                 foreach (var error in result.Errors)
                 {
                     ModelState.AddModelError("", error.Description);
                 }
                 return View(model);
             }
+            return RedirectToAction("Index");
+        }
+
+        public async Task<IActionResult> DeleteRole(int id)
+        {
+            var role = await _roleManager.FindByIdAsync(id.ToString());
+            var result = await _roleManager.DeleteAsync(role);
             return RedirectToAction("Index");
         }
     }
