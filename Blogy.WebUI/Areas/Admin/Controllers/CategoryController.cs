@@ -1,13 +1,14 @@
-﻿using System.Threading.Tasks;
-using Blogy.Business.DTOs.CategoryDtos;
+﻿using Blogy.Business.DTOs.CategoryDtos;
 using Blogy.Business.Services.CategoryServices;
+using Blogy.WebUI.Consts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace Blogy.WebUI.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [Authorize]
+    [Authorize(Roles = $"{Roles.Admin}")]
     public class CategoryController(ICategoryService _categoryService) : Controller
     {
         public async Task<IActionResult> Index()

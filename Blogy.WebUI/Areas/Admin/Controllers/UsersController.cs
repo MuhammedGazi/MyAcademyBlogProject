@@ -2,14 +2,15 @@
 using Blogy.Business.DTOs.UserDtos;
 using Blogy.Entity.Entities;
 using Blogy.WebUI.Consts;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Threading.Tasks;
 
 namespace Blogy.WebUI.Areas.Admin.Controllers
 {
     [Area(Roles.Admin)]
+    [Authorize(Roles = $"{Roles.Admin}")]
     public class UsersController(UserManager<AppUser> _userManager, IMapper _mapper, RoleManager<AppRole> _roleManager) : Controller
     {
         public async Task<IActionResult> Index()
@@ -19,10 +20,7 @@ namespace Blogy.WebUI.Areas.Admin.Controllers
             foreach (var user in users)
             {
                 var userRoles = await _userManager.GetRolesAsync(user);
-                foreach (var role in mappedUsers)
-                {
-                    role.Roles = userRoles;
-                }
+                mappedUsers.Find(x => x.Id == user.Id).Roles = userRoles;
             }
             return View(mappedUsers);
         }
@@ -49,7 +47,7 @@ namespace Blogy.WebUI.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> AssignRole(List<AssignRoleDto> assignRoleDtos)
         {
-            var userId=assignRoleDtos.Select(x=>x.UserId).FirstOrDefault();
+            var userId = assignRoleDtos.Select(x => x.UserId).FirstOrDefault();
             var user = await _userManager.FindByIdAsync(userId.ToString());
             foreach (var item in assignRoleDtos)
             {
