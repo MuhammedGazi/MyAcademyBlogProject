@@ -2,6 +2,7 @@
 using Blogy.DataAccess.Repositories.BlogRepositories;
 using Blogy.DataAccess.Repositories.BlogTagRepositories;
 using Blogy.DataAccess.Repositories.CategoryRepositories;
+using Blogy.DataAccess.Repositories.CommentRepositories;
 using Blogy.Entity.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -11,11 +12,13 @@ namespace Blogy.DataAccess.Extensions
 {
     public static class ServiceRegistrations
     {
-        public static void AddRepositoriesExt(this IServiceCollection services,IConfiguration configuration)
+        public static void AddRepositoriesExt(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<IBlogRepository, BlogRepository>();
             services.AddScoped<IBlogTagRepository, BlogTagRepository>();
+            services.AddScoped<ICommentRepository, CommentRepository>();
+
             services.AddDbContext<AppDbContext>(options =>
             {
                 options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));

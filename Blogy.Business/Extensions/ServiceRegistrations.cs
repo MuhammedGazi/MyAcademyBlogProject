@@ -1,6 +1,7 @@
 ﻿using Blogy.Business.Mappings;
 using Blogy.Business.Services.BlogServices;
 using Blogy.Business.Services.CategoryServices;
+using Blogy.Business.Services.CommentServices;
 using Blogy.Business.Validators.CategoryValidators;
 using FluentValidation;
 using FluentValidation.AspNetCore;
@@ -19,6 +20,7 @@ namespace Blogy.Business.Extensions
                 .AddValidatorsFromAssembly(typeof(CreateCategoryValidator).Assembly);
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<IBlogService, BlogService>();
+            services.AddScoped<ICommentService, CommentService>();
         }
     }
 }
