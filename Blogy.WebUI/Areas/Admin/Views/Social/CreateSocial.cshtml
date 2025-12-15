@@ -1,0 +1,286 @@
+﻿@model CreateSocialDto
+@{
+    ViewData["Title"] = "CreateSocial";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="container-fluid px-4 py-4">
+    <!-- Header Section -->
+    <div class="mb-4">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="@Url.Action("Index")" class="text-decoration-none">
+                        <i class="fas fa-home me-1"></i>Sosyal Medya
+                    </a>
+                </li>
+                <li class="breadcrumb-item active">Yeni Hesap Ekle</li>
+            </ol>
+        </nav>
+        <h2 class="fw-bold text-dark mb-1">
+            <i class="fas fa-plus-circle text-primary me-2"></i>
+            Yeni Sosyal Medya Hesabı Ekle
+        </h2>
+        <p class="text-muted mb-0">Yeni bir sosyal medya hesabı ekleyin</p>
+    </div>
+
+    <div class="row">
+        <!-- Form Section -->
+        <div class="col-lg-8 mb-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white py-3 border-bottom">
+                    <h5 class="mb-0 fw-bold text-dark">
+                        <i class="fas fa-edit me-2 text-primary"></i>Hesap Bilgileri
+                    </h5>
+                </div>
+                <div class="card-body p-4">
+                    <form asp-action="CreateSocial" method="post" id="socialForm">
+                        <div class="row">
+                            <div class="col-md-12 mb-4">
+                                <label asp-for="Name" class="form-label fw-semibold text-dark">
+                                    <i class="fas fa-tag text-primary me-2"></i>Platform Adı
+                                </label>
+                                <input asp-for="Name"
+                                       class="form-control form-control-lg"
+                                       placeholder="Örn: Facebook, Twitter, Instagram" />
+                                <span asp-validation-for="Name" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-md-12 mb-4">
+                                <label asp-for="Url" class="form-label fw-semibold text-dark">
+                                    <i class="fas fa-link text-primary me-2"></i>URL Adresi
+                                </label>
+                                <input asp-for="Url"
+                                       class="form-control form-control-lg"
+                                       placeholder="https://facebook.com/username"
+                                       type="url" />
+                                <span asp-validation-for="Url" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-md-12 mb-4">
+                                <label asp-for="Icon" class="form-label fw-semibold text-dark">
+                                    <i class="fas fa-icons text-primary me-2"></i>FontAwesome İkon Kodu
+                                </label>
+                                <div class="input-group input-group-lg">
+                                    <input asp-for="Icon"
+                                           class="form-control"
+                                           placeholder="fab fa-facebook"
+                                           id="iconInput" />
+                                    <button class="btn btn-outline-secondary"
+                                            type="button"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#iconModal">
+                                        <i class="fas fa-search"></i> İkon Seç
+                                    </button>
+                                </div>
+                                <span asp-validation-for="Icon" class="text-danger small"></span>
+                                <small class="text-muted d-block mt-2">
+                                    <i class="fas fa-info-circle me-1"></i>
+                                    FontAwesome 5 ikon kodunu girin (Örn: fab fa-facebook, fab fa-twitter)
+                                </small>
+                            </div>
+
+                            <!-- Icon Preview -->
+                            <div class="col-md-12 mb-4">
+                                <div class="card bg-light border-0">
+                                    <div class="card-body text-center py-4">
+                                        <p class="text-muted mb-3 fw-semibold">İkon Önizleme</p>
+                                        <div id="iconPreview" class="d-inline-flex align-items-center justify-content-center bg-white rounded-circle shadow-sm"
+                                             style="width: 80px; height: 80px;">
+                                            <i class="fas fa-question fa-2x text-muted"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr class="my-4">
+
+                        <div class="d-flex gap-3">
+                            <button type="submit" class="btn btn-primary btn-lg px-4">
+                                <i class="fas fa-save me-2"></i>Kaydet
+                            </button>
+                            <a href="@Url.Action("Index")" class="btn btn-outline-secondary btn-lg px-4">
+                                <i class="fas fa-times me-2"></i>İptal
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Info Section -->
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-primary text-white py-3">
+                    <h6 class="mb-0 fw-bold">
+                        <i class="fas fa-lightbulb me-2"></i>Yardım & İpuçları
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <h6 class="fw-semibold text-dark mb-2">
+                            <i class="fas fa-check-circle text-success me-2"></i>Platform Adı
+                        </h6>
+                        <p class="text-muted small mb-0">Sosyal medya platformunun adını girin (Facebook, Twitter, vb.)</p>
+                    </div>
+                    <hr>
+                    <div class="mb-3">
+                        <h6 class="fw-semibold text-dark mb-2">
+                            <i class="fas fa-check-circle text-success me-2"></i>URL Adresi
+                        </h6>
+                        <p class="text-muted small mb-0">Profil sayfanızın tam URL adresini girin</p>
+                    </div>
+                    <hr>
+                    <div>
+                        <h6 class="fw-semibold text-dark mb-2">
+                            <i class="fas fa-check-circle text-success me-2"></i>İkon Seçimi
+                        </h6>
+                        <p class="text-muted small mb-0">FontAwesome kütüphanesinden uygun ikonu seçin</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card border-0 shadow-sm bg-gradient-info text-white">
+                <div class="card-body">
+                    <h6 class="fw-bold mb-3">
+                        <i class="fas fa-star me-2"></i>Popüler İkonlar
+                    </h6>
+                    <div class="d-flex flex-wrap gap-2">
+                        <span class="badge bg-white bg-opacity-25 p-2 cursor-pointer" onclick="setIcon('fab fa-facebook')">
+                            <i class="fab fa-facebook fa-lg"></i>
+                        </span>
+                        <span class="badge bg-white bg-opacity-25 p-2 cursor-pointer" onclick="setIcon('fab fa-twitter')">
+                            <i class="fab fa-twitter fa-lg"></i>
+                        </span>
+                        <span class="badge bg-white bg-opacity-25 p-2 cursor-pointer" onclick="setIcon('fab fa-instagram')">
+                            <i class="fab fa-instagram fa-lg"></i>
+                        </span>
+                        <span class="badge bg-white bg-opacity-25 p-2 cursor-pointer" onclick="setIcon('fab fa-linkedin')">
+                            <i class="fab fa-linkedin fa-lg"></i>
+                        </span>
+                        <span class="badge bg-white bg-opacity-25 p-2 cursor-pointer" onclick="setIcon('fab fa-youtube')">
+                            <i class="fab fa-youtube fa-lg"></i>
+                        </span>
+                        <span class="badge bg-white bg-opacity-25 p-2 cursor-pointer" onclick="setIcon('fab fa-github')">
+                            <i class="fab fa-github fa-lg"></i>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Icon Modal -->
+<div class="modal fade" id="iconModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title">
+                    <i class="fas fa-icons me-2"></i>İkon Seç
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <input type="text" class="form-control mb-3" id="iconSearch" placeholder="İkon ara...">
+                <div class="row g-2" id="iconGrid">
+                    <!-- Icons will be populated here -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .bg-gradient-info {
+        background: linear-gradient(135deg, #209cff 0%, #68e0cf 100%);
+    }
+
+    .cursor-pointer {
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+        .cursor-pointer:hover {
+            transform: scale(1.1);
+            background-color: rgba(255,255,255,0.4) !important;
+        }
+
+    .form-control:focus, .input-group:focus-within .form-control {
+        border-color: #667eea;
+        box-shadow: 0 0 0 0.25rem rgba(102, 126, 234, 0.25);
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+    }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+</style>
+
+<script>
+    // Icon preview
+    document.getElementById('iconInput').addEventListener('input', function(e) {
+        const iconClass = e.target.value;
+        const preview = document.getElementById('iconPreview');
+        preview.innerHTML = iconClass ?
+            `<i class="${iconClass} fa-2x text-primary"></i>` :
+            `<i class="fas fa-question fa-2x text-muted"></i>`;
+    });
+
+    function setIcon(iconClass) {
+        document.getElementById('iconInput').value = iconClass;
+        document.getElementById('iconInput').dispatchEvent(new Event('input'));
+    }
+
+    // Popular social media icons
+    const popularIcons = [
+        'fab fa-facebook', 'fab fa-twitter', 'fab fa-instagram', 'fab fa-linkedin',
+        'fab fa-youtube', 'fab fa-github', 'fab fa-pinterest', 'fab fa-reddit',
+        'fab fa-whatsapp', 'fab fa-telegram', 'fab fa-tiktok', 'fab fa-discord',
+        'fab fa-twitch', 'fab fa-spotify', 'fab fa-snapchat', 'fab fa-medium'
+    ];
+
+    // Populate icon modal
+    document.addEventListener('DOMContentLoaded', function() {
+        const iconGrid = document.getElementById('iconGrid');
+        popularIcons.forEach(icon => {
+            const div = document.createElement('div');
+            div.className = 'col-2 text-center';
+            div.innerHTML = `
+                <div class="p-3 border rounded cursor-pointer icon-item" onclick="selectIcon('${icon}')">
+                    <i class="${icon} fa-2x text-primary"></i>
+                </div>
+            `;
+            iconGrid.appendChild(div);
+        });
+
+        // Icon search
+        document.getElementById('iconSearch').addEventListener('input', function(e) {
+            const search = e.target.value.toLowerCase();
+            document.querySelectorAll('.icon-item').forEach(item => {
+                const parent = item.parentElement;
+                const iconClass = item.querySelector('i').className;
+                parent.style.display = iconClass.toLowerCase().includes(search) ? 'block' : 'none';
+            });
+        });
+    });
+
+    function selectIcon(iconClass) {
+        setIcon(iconClass);
+        const modal = bootstrap.Modal.getInstance(document.getElementById('iconModal'));
+        modal.hide();
+    }
+</script>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+

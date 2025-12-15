@@ -26,9 +26,8 @@ namespace Blogy.WebUI.Controllers
 
         public async Task<IActionResult> BlogDetails(int id)
         {
-            var blog = await _blogService.GetByIdAsync(id);
-            var value = _mapper.Map<ResultBlogDto>(blog);
-            return View(value);
+            var blog = await _blogService.GetSingleByIdAsync(id);
+            return View(blog);
         }
     }
 }

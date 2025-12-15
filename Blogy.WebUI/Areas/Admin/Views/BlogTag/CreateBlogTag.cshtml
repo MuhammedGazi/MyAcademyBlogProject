@@ -1,0 +1,194 @@
+﻿@model CreateBlogTagDto
+@{
+    ViewData["Title"] = "CreateBlogTag";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <!-- Header Card -->
+            <div class="card shadow-lg border-0 mb-4">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="bg-success text-white rounded-3 p-3 me-3">
+                            <i class="fas fa-plus-circle fa-2x"></i>
+                        </div>
+                        <div>
+                            <h2 class="mb-1 fw-bold">Yeni Blog Tag Ekle</h2>
+                            <p class="text-muted mb-0">Blog ve etiket eşleştirmesi oluşturun</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form Card -->
+            <div class="card shadow-lg border-0">
+                <div class="card-body p-4">
+                    <form asp-action="CreateBlogTag" method="post" id="createForm">
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+                        <div class="mb-4">
+                            <label asp-for="BlogId" class="form-label fw-semibold">
+                                <i class="fas fa-file-alt text-primary me-2"></i>Blog Seçin
+                            </label>
+
+                            <select asp-for="BlogId"
+                                    class="form-select form-select-lg shadow-sm"
+                                    asp-items="@((List<SelectListItem>)ViewBag.Blogs)">
+                                <option value="">Blog seçiniz...</option>
+                            </select>
+
+                            <span asp-validation-for="BlogId" class="text-danger small"></span>
+                            <div class="form-text">
+                                <i class="fas fa-info-circle me-1"></i>Etiket eklemek istediğiniz blogu seçin
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="TagId" class="form-label fw-semibold">
+                                <i class="fas fa-tag text-success me-2"></i>Etiket Seçin
+                            </label>
+
+                            <select asp-for="TagId"
+                                    class="form-select form-select-lg shadow-sm"
+                                    asp-items="@((List<SelectListItem>)ViewBag.Tags)">
+                                <option value="">Etiket seçiniz...</option>
+                            </select>
+
+                            <span asp-validation-for="TagId" class="text-danger small"></span>
+                            <div class="form-text">
+                                <i class="fas fa-info-circle me-1"></i>Blog için uygun etiketi seçin
+                            </div>
+                        </div>
+
+                        <!-- Info Box -->
+                        <div class="alert alert-info border-0 shadow-sm" role="alert">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-lightbulb fa-2x me-3"></i>
+                                <div>
+                                    <h6 class="alert-heading mb-1">İpucu</h6>
+                                    <p class="mb-0 small">Bir blog'a birden fazla etiket ekleyebilirsiniz. Her eşleştirme ayrı bir kayıt olarak saklanır.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Buttons -->
+                        <div class="d-flex gap-3 mt-4">
+                            <button type="submit" class="btn btn-success btn-lg flex-fill shadow-sm">
+                                <i class="fas fa-save me-2"></i>Kaydet
+                            </button>
+                            <a asp-action="Index" class="btn btn-secondary btn-lg flex-fill shadow-sm">
+                                <i class="fas fa-times me-2"></i>İptal
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Quick Stats -->
+            <div class="row mt-4">
+                <div class="col-md-6 mb-3">
+                    <div class="card border-0 shadow-sm bg-primary bg-opacity-10">
+                        <div class="card-body text-center">
+                            <i class="fas fa-file-alt fa-2x text-primary mb-2"></i>
+                            <h6 class="text-muted mb-0">Toplam Blog</h6>
+                            <h3 class="fw-bold text-primary">@ViewBag.BlogCount</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <div class="card border-0 shadow-sm bg-success bg-opacity-10">
+                        <div class="card-body text-center">
+                            <i class="fas fa-tags fa-2x text-success mb-2"></i>
+                            <h6 class="text-muted mb-0">Toplam Etiket</h6>
+                            <h3 class="fw-bold text-success">@ViewBag.TagCount</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .form-select:focus,
+        .form-control:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.25rem rgba(102, 126, 234, 0.25);
+        }
+
+        .card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+            .card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 1rem 3rem rgba(0,0,0,.175) !important;
+            }
+
+        .btn {
+            transition: all 0.3s ease;
+        }
+
+            .btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 0.5rem 1rem rgba(0,0,0,.15);
+            }
+
+        .form-select,
+        .form-control {
+            border-radius: 0.5rem;
+            border: 2px solid #e9ecef;
+            transition: all 0.3s ease;
+        }
+
+            .form-select:hover,
+            .form-control:hover {
+                border-color: #667eea;
+            }
+
+        .alert {
+            border-radius: 0.75rem;
+        }
+    </style>
+}
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        // Form validation
+        document.getElementById('createForm').addEventListener('submit', function(e) {
+            const blogId = document.querySelector('select[name="BlogId"]').value;
+            const tagId = document.querySelector('select[name="TagId"]').value;
+
+            if (!blogId || !tagId) {
+                e.preventDefault();
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Eksik Bilgi',
+                    text: 'Lütfen blog ve etiket seçimini yapınız!',
+                    confirmButtonColor: '#667eea'
+                });
+                return false;
+            }
+        });
+
+        // Backend'den gelen Başarılı mesajı (Varsa çalışır)
+        @if (TempData["Success"] != null)
+        {
+                        <text>
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Başarılı!',
+                            text: '@TempData["Success"]',
+                            confirmButtonColor: '#28a745'
+                        });
+                        </text>
+        }
+    </script>
+}

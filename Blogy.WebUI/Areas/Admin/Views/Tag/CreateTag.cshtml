@@ -1,0 +1,365 @@
+﻿@model CreateTagDto
+@{
+    ViewData["Title"] = "CreateTag";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-xl-7">
+            <!-- Animated Header Card -->
+            <div class="card border-0 shadow-lg mb-4 animate__animated animate__fadeInDown">
+                <div class="card-body bg-gradient-success text-white rounded-3 p-4">
+                    <div class="d-flex align-items-center">
+                        <div class="bg-white bg-opacity-25 rounded-circle p-4 me-4">
+                            <i class="fas fa-plus-circle fa-3x"></i>
+                        </div>
+                        <div>
+                            <h1 class="mb-2 fw-bold display-6">✨ Yeni Etiket Ekle</h1>
+                            <p class="mb-0 opacity-75 fs-5">Bloğunuz için yeni bir etiket oluşturun</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Info Cards -->
+            <div class="row mb-4">
+                <div class="col-md-6 mb-3">
+                    <div class="card border-0 shadow-sm card-hover h-100 bg-gradient-blue">
+                        <div class="card-body text-white text-center p-4">
+                            <i class="fas fa-lightbulb fa-3x mb-3"></i>
+                            <h6 class="fw-bold">İpucu</h6>
+                            <p class="small mb-0">Kısa ve anlamlı etiket isimleri kullanın</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <div class="card border-0 shadow-sm card-hover h-100 bg-gradient-purple">
+                        <div class="card-body text-white text-center p-4">
+                            <i class="fas fa-star fa-3x mb-3"></i>
+                            <h6 class="fw-bold">Öneri</h6>
+                            <p class="small mb-0">SEO uyumlu etiketler tercih edin</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Form Card -->
+            <div class="card border-0 shadow-lg animate__animated animate__fadeInUp">
+                <div class="card-header bg-white border-0 pt-4 pb-0">
+                    <div class="d-flex align-items-center">
+                        <div class="bg-success bg-opacity-10 rounded-3 p-3 me-3">
+                            <i class="fas fa-edit fa-2x text-success"></i>
+                        </div>
+                        <div>
+                            <h4 class="mb-1 fw-bold">Etiket Bilgileri</h4>
+                            <p class="text-muted mb-0 small">Aşağıdaki formu doldurun</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-body p-4">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger rounded-3 shadow-sm" role="alert"></div>
+
+                    <div class="mb-4">
+                        <label asp-for="Name" class="form-label fw-bold fs-5">
+                            <i class="fas fa-tag text-success me-2"></i>Etiket Adı
+                            <span class="text-danger">*</span>
+                        </label>
+                        <div class="input-group input-group-lg shadow-sm">
+                            <span class="input-group-text bg-light border-end-0">
+                                <i class="fas fa-keyboard text-muted"></i>
+                            </span>
+                            <input asp-for="Name"
+                                   class="form-control border-start-0 border-2"
+                                   placeholder="Örn: Teknoloji, Yazılım, Tasarım..."
+                                   autocomplete="off"
+                                   id="tagNameInput" />
+                        </div>
+                        <span asp-validation-for="Name" class="text-danger small"></span>
+
+                        <div class="mt-3">
+                            <div class="d-flex align-items-center justify-content-between bg-light rounded-3 p-3">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-info-circle text-info me-2"></i>
+                                    <small class="text-muted">Karakter sayısı:</small>
+                                </div>
+                                <span class="badge bg-primary badge-glow" id="charCount">0 / 50</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tag Preview -->
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">
+                            <i class="fas fa-eye text-primary me-2"></i>Önizleme
+                        </label>
+                        <div class="bg-light rounded-3 p-4 text-center">
+                            <div id="tagPreview">
+                                <span class="badge bg-gradient-success badge-preview px-4 py-3 fs-5">
+                                    <i class="fas fa-tag me-2"></i>
+                                    <span id="previewText">Etiket Adı</span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Suggestions -->
+                    <div class="alert alert-info border-0 shadow-sm rounded-3" role="alert">
+                        <div class="d-flex">
+                            <div class="me-3">
+                                <i class="fas fa-rocket fa-2x"></i>
+                            </div>
+                            <div>
+                                <h6 class="alert-heading mb-2">
+                                    <i class="fas fa-magic me-1"></i>Popüler Etiket Önerileri
+                                </h6>
+                                <div class="d-flex flex-wrap gap-2">
+                                    <button type="button" class="btn btn-sm btn-outline-info suggestion-btn" onclick="fillTag('Teknoloji')">
+                                        Teknoloji
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-outline-info suggestion-btn" onclick="fillTag('Yazılım')">
+                                        Yazılım
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-outline-info suggestion-btn" onclick="fillTag('Tasarım')">
+                                        Tasarım
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-outline-info suggestion-btn" onclick="fillTag('Yapay Zeka')">
+                                        Yapay Zeka
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-outline-info suggestion-btn" onclick="fillTag('Web Geliştirme')">
+                                        Web Geliştirme
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="d-flex gap-3 mt-4">
+                        <button type="button" onclick="submitForm()" class="btn btn-success btn-lg flex-fill shadow-sm pulse-btn">
+                            <i class="fas fa-check-circle me-2"></i>Kaydet ve Yayınla
+                        </button>
+                        <a asp-action="Index" class="btn btn-secondary btn-lg flex-fill shadow-sm">
+                            <i class="fas fa-times-circle me-2"></i>İptal
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tips Card -->
+            <div class="card border-0 shadow-sm mt-4 animate__animated animate__fadeInUp">
+                <div class="card-body">
+                    <h6 class="fw-bold mb-3">
+                        <i class="fas fa-check-double text-success me-2"></i>Etiket Oluşturma İpuçları
+                    </h6>
+                    <ul class="list-unstyled mb-0">
+                        <li class="mb-2">
+                            <i class="fas fa-check text-success me-2"></i>
+                            <small>Etiket adı 3-50 karakter arasında olmalıdır</small>
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-check text-success me-2"></i>
+                            <small>Özel karakterler yerine Türkçe karakterler kullanabilirsiniz</small>
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-check text-success me-2"></i>
+                            <small>Aynı isimde birden fazla etiket oluşturamazsınız</small>
+                        </li>
+                        <li class="mb-0">
+                            <i class="fas fa-check text-success me-2"></i>
+                            <small>Etiketler blog yazılarınızda kategorizasyon için kullanılır</small>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Hidden Form -->
+<form id="createForm" asp-action="CreateTag" method="post" style="display: none;">
+    <input type="hidden" asp-for="Name" id="hiddenName" />
+</form>
+
+@section Styles {
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <style>
+        .bg-gradient-success {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+        }
+
+        .bg-gradient-blue {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        .bg-gradient-purple {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .card-hover {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+            .card-hover:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 15px 35px rgba(0,0,0,0.15) !important;
+            }
+
+        .pulse-btn {
+            animation: pulse 2s infinite;
+        }
+
+        @@keyframes pulse {
+            0%, 100%
+
+        {
+            transform: scale(1);
+        }
+
+        50% {
+            transform: scale(1.02);
+        }
+
+        }
+
+        .badge-glow {
+            box-shadow: 0 0 15px rgba(0,0,0,0.2);
+            animation: glow 2s ease-in-out infinite;
+        }
+
+        @@keyframes glow {
+            0%, 100%
+
+        {
+            box-shadow: 0 0 15px rgba(0,0,0,0.2);
+        }
+
+        50% {
+            box-shadow: 0 0 25px rgba(0,123,255,0.5);
+        }
+
+        }
+
+        .badge-preview {
+            font-size: 1.5rem !important;
+            padding: 1rem 2rem !important;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: #43e97b;
+            box-shadow: 0 0 0 0.25rem rgba(67, 233, 123, 0.25);
+        }
+
+        .suggestion-btn {
+            transition: all 0.3s ease;
+        }
+
+            .suggestion-btn:hover {
+                transform: scale(1.1);
+                box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            }
+    </style>
+}
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        const tagInput = document.getElementById('tagNameInput');
+        const charCountBadge = document.getElementById('charCount');
+        const previewText = document.getElementById('previewText');
+
+        // Real-time preview and character count
+        tagInput.addEventListener('input', function() {
+            const value = this.value;
+            const length = value.length;
+
+            // Update character count
+            charCountBadge.textContent = length + ' / 50';
+            charCountBadge.className = 'badge badge-glow ' +
+                (length > 50 ? 'bg-danger' : length > 40 ? 'bg-warning' : 'bg-primary');
+
+            // Update preview
+            previewText.textContent = value || 'Etiket Adı';
+
+            // Animate preview
+            document.querySelector('.badge-preview').classList.add('animate__animated', 'animate__pulse');
+            setTimeout(() => {
+                document.querySelector('.badge-preview').classList.remove('animate__animated', 'animate__pulse');
+            }, 500);
+        });
+
+        // Fill suggestion
+        function fillTag(tagName) {
+            tagInput.value = tagName;
+            tagInput.dispatchEvent(new Event('input'));
+            tagInput.focus();
+
+            // Animate input
+            tagInput.classList.add('animate__animated', 'animate__bounceIn');
+            setTimeout(() => {
+                tagInput.classList.remove('animate__animated', 'animate__bounceIn');
+            }, 1000);
+        }
+
+        // Submit with confirmation
+        function submitForm() {
+            const tagName = tagInput.value.trim();
+
+            if (!tagName) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Dikkat!',
+                    text: 'Lütfen bir etiket adı giriniz!',
+                    confirmButtonColor: '#ffc107'
+                });
+                return;
+            }
+
+            if (tagName.length > 50) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Hata!',
+                    text: 'Etiket adı en fazla 50 karakter olabilir!',
+                    confirmButtonColor: '#dc3545'
+                });
+                return;
+            }
+
+            Swal.fire({
+                title: 'Etiket Oluşturuluyor...',
+                html: `<strong>${tagName}</strong> etiketini oluşturmak istediğinizden emin misiniz?`,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#43e97b',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: '<i class="fas fa-check me-2"></i>Evet, Oluştur!',
+                cancelButtonText: '<i class="fas fa-times me-2"></i>İptal',
+                customClass: {
+                    confirmButton: 'btn btn-success btn-lg',
+                    cancelButton: 'btn btn-secondary btn-lg'
+                },
+                buttonsStyling: false
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('hiddenName').value = tagName;
+                    document.getElementById('createForm').submit();
+                }
+            });
+        }
+
+        // Enter key submit
+        tagInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                submitForm();
+            }
+        });
+    </script>
+}
+

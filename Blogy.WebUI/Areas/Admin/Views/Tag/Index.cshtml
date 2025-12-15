@@ -1,0 +1,385 @@
+﻿@model List<ResultTagDto>
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="container-fluid py-4">
+    <!-- Animated Header -->
+    <div class="card shadow-lg border-0 mb-4 animate__animated animate__fadeInDown">
+        <div class="card-body bg-gradient-purple text-white rounded-3">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <div class="d-flex align-items-center">
+                        <div class="bg-white bg-opacity-25 rounded-circle p-3 me-3">
+                            <i class="fas fa-tags fa-3x"></i>
+                        </div>
+                        <div>
+                            <h1 class="mb-1 fw-bold display-6">🏷️ Etiket Yönetimi</h1>
+                            <p class="mb-0 opacity-75">Blog etiketlerinizi yönetin ve organize edin</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 text-end">
+                    <a asp-action="CreateTag" class="btn btn-light btn-lg shadow-sm pulse-animation">
+                        <i class="fas fa-plus-circle me-2"></i>Yeni Etiket Ekle
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Colorful Stats Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3 mb-3">
+            <div class="card border-0 shadow-sm h-100 card-hover bg-gradient-blue">
+                <div class="card-body text-white text-center">
+                    <i class="fas fa-tags fa-3x mb-3 animate-icon"></i>
+                    <h6 class="opacity-75 mb-2">Toplam Etiket</h6>
+                    <h2 class="fw-bold mb-0">@Model.Count</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card border-0 shadow-sm h-100 card-hover bg-gradient-green">
+                <div class="card-body text-white text-center">
+                    <i class="fas fa-check-circle fa-3x mb-3 animate-icon"></i>
+                    <h6 class="opacity-75 mb-2">Aktif Etiket</h6>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card border-0 shadow-sm h-100 card-hover bg-gradient-orange">
+                <div class="card-body text-white text-center">
+                    <i class="fas fa-fire fa-3x mb-3 animate-icon"></i>
+                    <h6 class="opacity-75 mb-2">Popüler Etiket</h6>
+                    <h2 class="fw-bold mb-0">@(Model.Count > 0 ? Model.Count / 2 : 0)</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card border-0 shadow-sm h-100 card-hover bg-gradient-pink">
+                <div class="card-body text-white text-center">
+                    <i class="fas fa-chart-line fa-3x mb-3 animate-icon"></i>
+                    <h6 class="opacity-75 mb-2">Kullanım Oranı</h6>
+                    <h2 class="fw-bold mb-0">%@(Model.Count > 0 ? 85 : 0)</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search and Filter -->
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-body">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <div class="input-group input-group-lg">
+                        <span class="input-group-text bg-white border-end-0">
+                            <i class="fas fa-search text-muted"></i>
+                        </span>
+                        <input type="text" class="form-control border-start-0"
+                               id="searchInput" placeholder="Etiket ara...">
+                    </div>
+                </div>
+                <div class="col-md-4 text-end">
+                    <button class="btn btn-outline-primary me-2" onclick="filterAll()">
+                        <i class="fas fa-list me-1"></i>Tümü
+                    </button>
+                    <button class="btn btn-outline-success" onclick="filterActive()">
+                        <i class="fas fa-check me-1"></i>Aktif
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tags Grid -->
+    <div class="row" id="tagsContainer">
+        @if (Model != null && Model.Any())
+        {
+            @foreach (var tag in Model)
+            {
+                var randomColors = new[] { "primary", "success", "info", "warning", "danger", "purple", "pink", "orange" };
+                var randomColor = randomColors[tag.Id % randomColors.Length];
+
+                <div class="col-md-6 col-lg-4 col-xl-3 mb-4 tag-card" data-tag-name="@tag.Name.ToLower()">
+                    <div class="card border-0 shadow-sm h-100 card-hover animate__animated animate__fadeInUp">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <div class="tag-icon bg-@randomColor bg-opacity-10 rounded-3 p-3">
+                                    <i class="fas fa-tag fa-2x text-@randomColor"></i>
+                                </div>
+                                <span class="badge bg-@randomColor badge-glow">ID: @tag.Id</span>
+                            </div>
+
+                            <h5 class="fw-bold mb-3 text-truncate" title="@tag.Name">
+                                @tag.Name
+                            </h5>
+
+                            <div class="progress mb-3" style="height: 6px;">
+                                <div class="progress-bar bg-@randomColor progress-bar-animated"
+                                     role="progressbar" style="width: @(new Random().Next(40, 100))%"></div>
+                            </div>
+
+                            <div class="d-flex gap-2">
+                                <a asp-action="UpdateTag" asp-route-id="@tag.Id"
+                                   class="btn btn-outline-@randomColor btn-sm flex-fill">
+                                    <i class="fas fa-edit"></i> Düzenle
+                                </a>
+                                <button onclick="confirmDelete(@tag.Id, '@tag.Name')"
+                                        class="btn btn-outline-danger btn-sm flex-fill">
+                                    <i class="fas fa-trash"></i> Sil
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="col-12">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body text-center py-5">
+                        <i class="fas fa-inbox fa-5x text-muted mb-4 opacity-50"></i>
+                        <h4 class="text-muted mb-3">Henüz etiket bulunmuyor</h4>
+                        <p class="text-muted mb-4">İlk etiketinizi ekleyerek başlayın!</p>
+                        <a asp-action="CreateTag" class="btn btn-primary btn-lg">
+                            <i class="fas fa-plus-circle me-2"></i>İlk Etiketi Ekle
+                        </a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<!-- Delete Form -->
+<form id="deleteForm" method="post" asp-action="DeleteTag" style="display: none;">
+    <input type="hidden" id="deleteId" name="id" />
+</form>
+
+@section Styles {
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <style>
+        .bg-gradient-purple {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .bg-gradient-blue {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        .bg-gradient-green {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+        }
+
+        .bg-gradient-orange {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+        }
+
+        .bg-gradient-pink {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .card-hover {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+            .card-hover:hover {
+                transform: translateY(-10px) scale(1.02);
+                box-shadow: 0 20px 40px rgba(0,0,0,0.15) !important;
+            }
+
+        .pulse-animation {
+            animation: pulse 2s infinite;
+        }
+
+        @@keyframes pulse {
+            0%, 100%
+
+        {
+            transform: scale(1);
+        }
+
+        50% {
+            transform: scale(1.05);
+        }
+
+        }
+
+        .animate-icon {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @@keyframes float {
+            0%, 100%
+
+        {
+            transform: translateY(0px);
+        }
+
+        50% {
+            transform: translateY(-10px);
+        }
+
+        }
+
+        .badge-glow {
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+        }
+
+        .tag-icon {
+            transition: all 0.3s ease;
+        }
+
+        .card-hover:hover .tag-icon {
+            transform: rotate(15deg) scale(1.1);
+        }
+
+        .bg-purple {
+            background-color: #6f42c1 !important;
+        }
+
+        .bg-pink {
+            background-color: #d63384 !important;
+        }
+
+        .bg-orange {
+            background-color: #fd7e14 !important;
+        }
+
+        .text-purple {
+            color: #6f42c1 !important;
+        }
+
+        .text-pink {
+            color: #d63384 !important;
+        }
+
+        .text-orange {
+            color: #fd7e14 !important;
+        }
+
+        .btn-outline-purple {
+            color: #6f42c1;
+            border-color: #6f42c1;
+        }
+
+            .btn-outline-purple:hover {
+                background-color: #6f42c1;
+                color: white;
+            }
+
+        .btn-outline-pink {
+            color: #d63384;
+            border-color: #d63384;
+        }
+
+            .btn-outline-pink:hover {
+                background-color: #d63384;
+                color: white;
+            }
+
+        .btn-outline-orange {
+            color: #fd7e14;
+            border-color: #fd7e14;
+        }
+
+            .btn-outline-orange:hover {
+                background-color: #fd7e14;
+                color: white;
+            }
+
+        .progress-bar-animated {
+            animation: progress-bar-stripes 1s linear infinite;
+        }
+    </style>
+}
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('keyup', function() {
+            const searchText = this.value.toLowerCase();
+            const cards = document.querySelectorAll('.tag-card');
+
+            cards.forEach(card => {
+                const tagName = card.getAttribute('data-tag-name');
+                if (tagName.includes(searchText)) {
+                    card.style.display = 'block';
+                    card.classList.add('animate__animated', 'animate__fadeIn');
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+
+        // Filter functions
+        function filterAll() {
+            document.querySelectorAll('.tag-card').forEach(card => {
+                card.style.display = 'block';
+            });
+        }
+
+        function filterActive() {
+            document.querySelectorAll('.tag-card').forEach(card => {
+                const hasActiveBadge = card.querySelector('.badge.bg-success');
+                card.style.display = hasActiveBadge ? 'block' : 'none';
+            });
+        }
+
+        // Delete confirmation
+        function confirmDelete(id, name) {
+            Swal.fire({
+                title: 'Emin misiniz?',
+                html: `<strong>${name}</strong> etiketini silmek istediğinizden emin misiniz?`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: '<i class="fas fa-trash me-2"></i>Evet, Sil!',
+                cancelButtonText: '<i class="fas fa-times me-2"></i>İptal',
+                customClass: {
+                    confirmButton: 'btn btn-danger btn-lg',
+                    cancelButton: 'btn btn-secondary btn-lg'
+                },
+                buttonsStyling: false
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('deleteId').value = id;
+                    document.getElementById('deleteForm').submit();
+                }
+            });
+        }
+
+        // Success/Error messages
+        @if (TempData["Success"] != null)
+        {
+                <text>
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Başarılı!',
+                    text: '@TempData["Success"]',
+                    confirmButtonColor: '#28a745',
+                    timer: 3000,
+                    showConfirmButton: false
+                });
+                </text>
+        }
+
+        @if (TempData["Error"] != null)
+        {
+                <text>
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Hata!',
+                    text: '@TempData["Error"]',
+                    confirmButtonColor: '#dc3545'
+                });
+                </text>
+        }
+    </script>
+}
+
