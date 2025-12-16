@@ -1,0 +1,408 @@
+﻿@model UpdateBlogDto
+@{
+    ViewData["Title"] = "UpdateBlog";
+    Layout = "~/Views/Shared/_WriterLayout.cshtml";
+}
+
+<div class="container-fluid px-4 py-4">
+    <!-- Header Section -->
+    <div class="mb-4">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="/Writer/Blog/Index" class="text-decoration-none">
+                        <i class="fas fa-home me-1"></i>Bloglar
+                    </a>
+                </li>
+                <li class="breadcrumb-item active">Blog Güncelle</li>
+            </ol>
+        </nav>
+        <h2 class="fw-bold text-dark mb-1">
+            <i class="fas fa-edit text-warning me-2"></i>
+            Blog Yazısını Güncelle
+        </h2>
+        <p class="text-muted mb-0">Mevcut blog yazınızı düzenleyin</p>
+    </div>
+
+    <div class="row">
+        <!-- Form Section -->
+        <div class="col-lg-8 mb-4">
+            <form method="post" id="updateForm">
+                <input type="hidden" asp-for="Id" />
+
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-white py-3 border-bottom">
+                        <h5 class="mb-0 fw-bold text-dark">
+                            <i class="fas fa-edit me-2 text-warning"></i>Temel Bilgiler
+                        </h5>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="mb-4">
+                            <label asp-for="Title" class="form-label fw-semibold text-dark">
+                                <i class="fas fa-heading text-warning me-2"></i>Blog Başlığı
+                            </label>
+                            <input type="text" asp-for="Title" class="form-control form-control-lg" placeholder="Etkileyici bir başlık girin..." />
+                            <span asp-validation-for="Title" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="Description" class="form-label fw-semibold text-dark">
+                                <i class="fas fa-align-left text-warning me-2"></i>Açıklama
+                            </label>
+                            <textarea asp-for="Description" class="form-control" rows="8" placeholder="Blog içeriğinizi buraya yazın..."></textarea>
+                            <span asp-validation-for="Description" class="text-danger small"></span>
+                            <small class="text-muted d-block mt-2">
+                                <i class="fas fa-info-circle me-1"></i>
+                                En az 50 karakter yazmanız önerilir
+                            </small>
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="CategoryId" class="form-label fw-semibold text-dark">
+                                <i class="fas fa-folder text-warning me-2"></i>Kategori
+                            </label>
+                            <select asp-for="CategoryId" class="form-select form-select-lg" asp-items="ViewBag.categories">
+                                <option value="">Kategori Seçiniz</option>
+                            </select>
+                            <span asp-validation-for="CategoryId" class="text-danger small"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-white py-3 border-bottom">
+                        <h5 class="mb-0 fw-bold text-dark">
+                            <i class="fas fa-images me-2 text-warning"></i>Görseller
+                        </h5>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="mb-4">
+                            <label asp-for="CoverImage" class="form-label fw-semibold text-dark">
+                                <i class="fas fa-image text-warning me-2"></i>Kapak Resmi URL
+                            </label>
+                            <input type="text" asp-for="CoverImage" class="form-control form-control-lg" placeholder="https://example.com/image.jpg" id="coverImageInput" />
+                            <span asp-validation-for="CoverImage" class="text-danger small"></span>
+
+                            <!-- Cover Image Preview -->
+                            <div class="mt-3" id="coverPreviewContainer">
+                                <p class="text-muted small mb-2">Mevcut Görsel:</p>
+                                <img id="coverPreview" src="@Model.CoverImage" alt="Cover Preview" class="img-fluid rounded shadow-sm" style="max-height: 300px; object-fit: cover;">
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="BlogImage1" class="form-label fw-semibold text-dark">
+                                <i class="fas fa-image text-warning me-2"></i>Blog Resmi 1
+                            </label>
+                            <input type="text" asp-for="BlogImage1" class="form-control" placeholder="https://example.com/image1.jpg" id="image1Input" />
+                            <span asp-validation-for="BlogImage1" class="text-danger small"></span>
+
+                            <div class="mt-2" id="image1PreviewContainer" style="@(string.IsNullOrEmpty(Model.BlogImage1) ? "display: none;" : "")">
+                                <img id="image1Preview" src="@Model.BlogImage1" alt="Image 1 Preview" class="img-thumbnail" style="max-height: 150px;">
+                            </div>
+                        </div>
+
+                        <div class="mb-0">
+                            <label asp-for="BlogImage2" class="form-label fw-semibold text-dark">
+                                <i class="fas fa-image text-warning me-2"></i>Blog Resmi 2
+                            </label>
+                            <input type="text" asp-for="BlogImage2" class="form-control" placeholder="https://example.com/image2.jpg" id="image2Input" />
+                            <span asp-validation-for="BlogImage2" class="text-danger small"></span>
+
+                            <div class="mt-2" id="image2PreviewContainer" style="@(string.IsNullOrEmpty(Model.BlogImage2) ? "display: none;" : "")">
+                                <img id="image2Preview" src="@Model.BlogImage2" alt="Image 2 Preview" class="img-thumbnail" style="max-height: 150px;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Current Info Card -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-body">
+                        <div class="alert alert-warning border-0 mb-0">
+                            <h6 class="alert-heading fw-bold mb-3">
+                                <i class="fas fa-info-circle me-2"></i>Mevcut Blog Bilgileri
+                            </h6>
+                            <div class="row">
+                                <div class="col-md-4 mb-2">
+                                    <small class="text-muted d-block">Blog ID</small>
+                                    <strong>@Model.Id</strong>
+                                </div>
+                                <div class="col-md-4 mb-2">
+                                    <small class="text-muted d-block">Oluşturma Tarihi</small>
+                                    <strong>@(Model.CreatedDate.ToString("dd.MM.yyyy") ?? "Bilinmiyor")</strong>
+                                </div>
+                                <div class="col-md-4 mb-2">
+                                    <small class="text-muted d-block">Durum</small>
+                                    <span class="badge bg-success">Aktif</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex gap-3">
+                    <button type="submit" class="btn btn-warning btn-lg px-4 text-white">
+                        <i class="fas fa-check me-2"></i>Güncelle
+                    </button>
+                    <button type="button" class="btn btn-outline-info btn-lg px-4" onclick="previewBlog()">
+                        <i class="fas fa-eye me-2"></i>Önizleme
+                    </button>
+                    <a href="/Writer/Blog/Index" class="btn btn-outline-secondary btn-lg px-4">
+                        <i class="fas fa-times me-2"></i>İptal
+                    </a>
+                    <button type="button" class="btn btn-outline-danger btn-lg px-4 ms-auto" onclick="confirmDelete()">
+                        <i class="fas fa-trash me-2"></i>Blogu Sil
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Info & Stats Section -->
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm mb-4 sticky-top" style="top: 20px;">
+                <div class="card-header bg-gradient-warning text-white py-3">
+                    <h6 class="mb-0 fw-bold">
+                        <i class="fas fa-history me-2"></i>Güncelleme Bilgileri
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <div class="d-flex align-items-center mb-2">
+                            <div class="bg-warning bg-opacity-10 rounded-circle p-2 me-3">
+                                <i class="fas fa-clock text-warning"></i>
+                            </div>
+                            <div>
+                                <small class="text-muted d-block">Son Güncelleme</small>
+                                <strong>@DateTime.Now.ToString("dd.MM.yyyy HH:mm")</strong>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="mb-3">
+                        <h6 class="fw-semibold text-dark mb-2">
+                            <i class="fas fa-exclamation-circle text-warning me-2"></i>Dikkat!
+                        </h6>
+                        <p class="text-muted small mb-0">Yaptığınız değişiklikler anında yayına alınacaktır</p>
+                    </div>
+                    <hr>
+                    <div>
+                        <h6 class="fw-semibold text-dark mb-2">
+                            <i class="fas fa-lightbulb text-warning me-2"></i>İpucu
+                        </h6>
+                        <p class="text-muted small mb-0">Değişikliklerden önce önizleme yaparak kontrol edebilirsiniz</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card border-0 shadow-sm bg-gradient-info text-white mb-4">
+                <div class="card-body">
+                    <h6 class="fw-bold mb-3">
+                        <i class="fas fa-chart-line me-2"></i>İçerik İstatistikleri
+                    </h6>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Karakter Sayısı:</span>
+                        <strong id="charCount">@Model.Description?.Length</strong>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Kelime Sayısı:</span>
+                        <strong id="wordCount">@(Model.Description?.Split(' ', StringSplitOptions.RemoveEmptyEntries).Length ?? 0)</strong>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <span>Okuma Süresi:</span>
+                        <strong id="readTime">@(Math.Ceiling((Model.Description?.Split(' ', StringSplitOptions.RemoveEmptyEntries).Length ?? 0) / 200.0)) dk</strong>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white py-3 border-bottom">
+                    <h6 class="mb-0 fw-bold text-dark">
+                        <i class="fas fa-history me-2 text-warning"></i>Değişiklik Geçmişi
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="timeline">
+                        <div class="timeline-item">
+                            <div class="timeline-marker bg-success"></div>
+                            <div class="timeline-content">
+                                <small class="text-muted">@(Model.CreatedDate.ToString("dd MMM yyyy") ?? "Bilinmiyor")</small>
+                                <p class="mb-0 small">Blog oluşturuldu</p>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-marker bg-warning"></div>
+                            <div class="timeline-content">
+                                <small class="text-muted">Bugün</small>
+                                <p class="mb-0 small">Son güncelleme</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .bg-gradient-warning {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    }
+
+    .bg-gradient-info {
+        background: linear-gradient(135deg, #209cff 0%, #68e0cf 100%);
+    }
+
+    .form-control:focus, .form-select:focus {
+        border-color: #ffc107;
+        box-shadow: 0 0 0 0.25rem rgba(255, 193, 7, 0.25);
+    }
+
+    .btn-warning {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        border: none;
+    }
+
+        .btn-warning:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(240, 147, 251, 0.4);
+        }
+
+    .btn {
+        transition: all 0.3s ease;
+    }
+
+    .img-thumbnail, .img-fluid {
+        transition: transform 0.3s ease;
+    }
+
+        .img-thumbnail:hover, .img-fluid:hover {
+            transform: scale(1.05);
+        }
+
+    .timeline {
+        position: relative;
+        padding-left: 30px;
+    }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 8px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: #dee2e6;
+        }
+
+    .timeline-item {
+        position: relative;
+        margin-bottom: 20px;
+    }
+
+    .timeline-marker {
+        position: absolute;
+        left: -26px;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        border: 3px solid #fff;
+    }
+</style>
+
+<script>
+    // Image Preview Functions
+    function setupImagePreview(inputId, previewId, containerId) {
+        const input = document.getElementById(inputId);
+        const preview = document.getElementById(previewId);
+        const container = document.getElementById(containerId);
+
+        input.addEventListener('input', function() {
+            const url = this.value;
+            if (url) {
+                preview.src = url;
+                container.style.display = 'block';
+                preview.onerror = function() {
+                    container.style.display = 'none';
+                };
+            } else {
+                container.style.display = 'none';
+            }
+        });
+    }
+
+    setupImagePreview('coverImageInput', 'coverPreview', 'coverPreviewContainer');
+    setupImagePreview('image1Input', 'image1Preview', 'image1PreviewContainer');
+    setupImagePreview('image2Input', 'image2Preview', 'image2PreviewContainer');
+
+    // Content Statistics
+    const descriptionTextarea = document.querySelector('textarea[name="Description"]');
+    const charCount = document.getElementById('charCount');
+    const wordCount = document.getElementById('wordCount');
+    const readTime = document.getElementById('readTime');
+
+    descriptionTextarea.addEventListener('input', function() {
+        const text = this.value;
+        const chars = text.length;
+        const words = text.trim().split(/\s+/).filter(word => word.length > 0).length;
+        const minutes = Math.ceil(words / 200);
+
+        charCount.textContent = chars;
+        wordCount.textContent = words;
+        readTime.textContent = minutes + ' dk';
+    });
+
+    // Preview Function
+    function previewBlog() {
+        Swal.fire({
+            title: 'Önizleme Hazırlanıyor',
+            text: 'Blog yazınızın önizlemesi yeni sekmede açılacak',
+            icon: 'info',
+            confirmButtonColor: '#667eea',
+            confirmButtonText: 'Tamam'
+        });
+    }
+
+    // Delete Confirmation
+    function confirmDelete() {
+        Swal.fire({
+            title: 'Emin misiniz?',
+            text: "Bu blogu silmek istediğinizden emin misiniz? Bu işlem geri alınamaz!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#dc3545',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Evet, Sil',
+            cancelButtonText: 'İptal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = '/Writer/Blog/DeleteBlog/@Model.Id';
+            }
+        });
+    }
+
+    // Form Validation
+    document.getElementById('updateForm').addEventListener('submit', function(e) {
+        const title = document.querySelector('input[name="Title"]').value;
+        const description = descriptionTextarea.value;
+
+        if (title.length < 10) {
+            e.preventDefault();
+            Swal.fire('Dikkat!', 'Başlık en az 10 karakter olmalıdır.', 'warning');
+            return false;
+        }
+
+        if (description.length < 50) {
+            e.preventDefault();
+            Swal.fire('Dikkat!', 'Açıklama en az 50 karakter olmalıdır.', 'warning');
+            return false;
+        }
+    });
+</script>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+

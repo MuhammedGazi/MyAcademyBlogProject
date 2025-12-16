@@ -1,0 +1,412 @@
+﻿@model List<ResultCommentDto>
+@{
+    ViewData["Title"] = "GetComment";
+    Layout = "~/Views/Shared/_WriterLayout.cshtml";
+}
+
+<div class="container-fluid py-4">
+    <!-- Animated Header -->
+    <div class="card shadow-lg border-0 mb-4 animate__animated animate__fadeInDown">
+        <div class="card-body bg-gradient-comments text-white rounded-3">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <div class="d-flex align-items-center">
+                        <div class="bg-white bg-opacity-25 rounded-circle p-3 me-3">
+                            <i class="fas fa-comments fa-3x"></i>
+                        </div>
+                        <div>
+                            <h1 class="mb-1 fw-bold display-6">💬 Yorum Yönetimi</h1>
+                            <p class="mb-0 opacity-75">Blog yorumlarını yönetin ve moderasyonu yapın</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Colorful Stats Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3 mb-3">
+            <div class="card border-0 shadow-sm h-100 card-hover bg-gradient-blue">
+                <div class="card-body text-white text-center">
+                    <i class="fas fa-comments fa-3x mb-3 animate-icon"></i>
+                    <h6 class="opacity-75 mb-2">Toplam Yorum</h6>
+                    <h2 class="fw-bold mb-0">@Model.Count</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card border-0 shadow-sm h-100 card-hover bg-gradient-green">
+                <div class="card-body text-white text-center">
+                    <i class="fas fa-file-alt fa-3x mb-3 animate-icon"></i>
+                    <h6 class="opacity-75 mb-2">Farklı Blog</h6>
+                    <h2 class="fw-bold mb-0">@Model.Select(x => x.BlogId).Distinct().Count()</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card border-0 shadow-sm h-100 card-hover bg-gradient-orange">
+                <div class="card-body text-white text-center">
+                    <i class="fas fa-chart-line fa-3x mb-3 animate-icon"></i>
+                    <h6 class="opacity-75 mb-2">Ortalama Uzunluk</h6>
+                    <h2 class="fw-bold mb-0">@(Model.Any() ? Model.Average(x => x.Content.Length).ToString("F0") : "0")</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card border-0 shadow-sm h-100 card-hover bg-gradient-pink">
+                <div class="card-body text-white text-center">
+                    <i class="fas fa-star fa-3x mb-3 animate-icon"></i>
+                    <h6 class="opacity-75 mb-2">Bugün Yapılan</h6>
+                    <h2 class="fw-bold mb-0">@Model.Count(x => x.CreatedDate.Date == DateTime.Today)</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search and Filter -->
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-body">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <div class="input-group input-group-lg">
+                        <span class="input-group-text bg-white border-end-0">
+                            <i class="fas fa-search text-muted"></i>
+                        </span>
+                        <input type="text" class="form-control border-start-0" 
+                               id="searchInput" placeholder="Yorum içeriğinde ara...">
+                    </div>
+                </div>
+                <div class="col-md-4 text-end mt-3 mt-md-0">
+                    <button class="btn btn-outline-primary" onclick="sortByDate()">
+                        <i class="fas fa-sort-amount-down me-1"></i>Tarihe Göre Sırala
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Comments List -->
+    <div class="row" id="commentsContainer">
+        @if (Model != null && Model.Any())
+        {
+            int count = 0;
+            @foreach (var item in Model)
+            {
+                count++;
+                var randomColors = new[] { "primary", "success", "info", "warning", "danger", "purple" };
+                var randomColor = randomColors[item.Id % randomColors.Length];
+                
+                <div class="col-12 mb-3 comment-card" data-date="@item.CreatedDate.ToString("yyyyMMddHHmmss")">
+                    <div class="card border-0 shadow-sm card-hover animate__animated animate__fadeInUp">
+                        <div class="card-body p-4">
+                            <div class="row align-items-center">
+                                <!-- Counter Badge -->
+                                <div class="col-auto">
+                                    <div class="comment-number bg-@randomColor bg-opacity-10 text-@randomColor rounded-circle">
+                                        <span class="fw-bold">@count</span>
+                                    </div>
+                                </div>
+                                
+                                <!-- Comment Content -->
+                                <div class="col">
+                                    <div class="d-flex align-items-start justify-content-between mb-2">
+                                        <div class="flex-grow-1">
+                                            <div class="d-flex align-items-center gap-2 mb-2">
+                                                <span class="badge bg-@randomColor badge-glow">
+                                                    <i class="fas fa-file-alt me-1"></i>Blog ID: @item.BlogId
+                                                </span>
+                                                <span class="badge bg-light text-dark">
+                                                    <i class="fas fa-hashtag me-1"></i>@item.Id
+                                                </span>
+                                                <span class="badge bg-light text-dark">
+                                                    <i class="fas fa-calendar me-1"></i>@item.CreatedDate.ToString("dd.MM.yyyy HH:mm")
+                                                </span>
+                                            </div>
+                                            
+                                            <div class="comment-content">
+                                                <i class="fas fa-quote-left text-muted me-2"></i>
+                                                <span class="comment-text">@item.Content</span>
+                                                <i class="fas fa-quote-right text-muted ms-2"></i>
+                                            </div>
+
+                                            @if (true)
+                                            {
+                                                <small class="text-muted d-block mt-2">
+                                                    <i class="fas fa-clock me-1"></i>
+                                                    Son güncelleme: @item.CreatedDate.ToString("dd.MM.yyyy HH:mm")
+                                                </small>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Action Buttons -->
+                                <div class="col-auto">
+                                    <div class="d-flex gap-2">
+                                        <a asp-action="UpdateComment" asp-route-id="@item.Id" 
+                                           class="btn btn-outline-@randomColor btn-sm" 
+                                           title="Düzenle">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <button onclick="confirmDelete(@item.Id)" 
+                                                class="btn btn-outline-danger btn-sm" 
+                                                title="Sil">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                        <button class="btn btn-outline-secondary btn-sm" 
+                                                title="Detay"
+                                                onclick="showCommentDetail(@item.Id, '@item.BlogId', '@item.Content.Replace("'", "\\'").Replace("\n", " ")', '@item.CreatedDate.ToString("dd.MM.yyyy HH:mm")')">
+                                            <i class="fas fa-info-circle"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="col-12">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body text-center py-5">
+                        <div class="empty-state">
+                            <i class="fas fa-inbox fa-5x text-muted mb-4 opacity-50"></i>
+                            <h4 class="text-muted mb-3">Henüz yorum bulunmuyor</h4>
+                            <p class="text-muted mb-4">İlk yorumu ekleyerek başlayın!</p>
+                            <a asp-action="CreateComment" class="btn btn-primary btn-lg">
+                                <i class="fas fa-plus-circle me-2"></i>İlk Yorumu Ekle
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<!-- Delete Form -->
+<form id="deleteForm" method="post" asp-action="DeleteComment" style="display: none;">
+    <input type="hidden" id="deleteId" name="id" />
+</form>
+
+@section Styles {
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <style>
+        .bg-gradient-comments {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .bg-gradient-blue {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+        
+        .bg-gradient-green {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+        }
+        
+        .bg-gradient-orange {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+        }
+        
+        .bg-gradient-pink {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+        
+        .card-hover {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-left: 4px solid transparent;
+        }
+        
+        .card-hover:hover {
+            transform: translateX(5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15) !important;
+            border-left-color: #667eea;
+        }
+        
+        .pulse-animation {
+            animation: pulse 2s infinite;
+        }
+        
+        @@keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        .animate-icon {
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @@keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .badge-glow {
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+        }
+        
+        .comment-number {
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+        
+        .comment-content {
+            font-size: 1.05rem;
+            line-height: 1.6;
+            padding: 0.5rem 0;
+        }
+        
+        .comment-text {
+            color: #2d3748;
+        }
+        
+        .bg-purple {
+            background-color: #6f42c1 !important;
+        }
+        
+        .text-purple {
+            color: #6f42c1 !important;
+        }
+        
+        .btn-outline-purple {
+            color: #6f42c1;
+            border-color: #6f42c1;
+        }
+        
+        .btn-outline-purple:hover {
+            background-color: #6f42c1;
+            color: white;
+        }
+        
+        .empty-state i {
+            animation: bounce 2s infinite;
+        }
+        
+        @@keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+    </style>
+}
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('keyup', function() {
+            const searchText = this.value.toLowerCase();
+            const cards = document.querySelectorAll('.comment-card');
+            
+            cards.forEach(card => {
+                const commentText = card.querySelector('.comment-text').textContent.toLowerCase();
+                if (commentText.includes(searchText)) {
+                    card.style.display = 'block';
+                    card.classList.add('animate__animated', 'animate__fadeIn');
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+        
+        // Filter functions
+        function sortByDate() {
+            const container = document.getElementById('commentsContainer');
+            const cards = Array.from(document.querySelectorAll('.comment-card'));
+            
+            cards.sort((a, b) => {
+                return b.getAttribute('data-date').localeCompare(a.getAttribute('data-date'));
+            });
+            
+            cards.forEach(card => container.appendChild(card));
+            
+            Swal.fire({
+                icon: 'success',
+                title: 'Sıralandı!',
+                text: 'Yorumlar tarihe göre sıralandı',
+                timer: 1500,
+                showConfirmButton: false
+            });
+        }
+        
+        // Show comment detail
+        function showCommentDetail(id, blogId, content, date) {
+            Swal.fire({
+                title: 'Yorum Detayı',
+                html: `
+                    <div class="text-start">
+                        <p><strong>Yorum ID:</strong> #${id}</p>
+                        <p><strong>Blog ID:</strong> ${blogId}</p>
+                        <p><strong>Tarih:</strong> ${date}</p>
+                        <hr>
+                        <p><strong>İçerik:</strong></p>
+                        <div class="alert alert-light">
+                            ${content}
+                        </div>
+                    </div>
+                `,
+                icon: 'info',
+                confirmButtonColor: '#667eea',
+                confirmButtonText: 'Kapat'
+            });
+        }
+        
+        // Delete confirmation
+        function confirmDelete(id) {
+            Swal.fire({
+                title: 'Emin misiniz?',
+                text: "Bu yorumu silmek istediğinizden emin misiniz?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: '<i class="fas fa-trash me-2"></i>Evet, Sil!',
+                cancelButtonText: '<i class="fas fa-times me-2"></i>İptal',
+                customClass: {
+                    confirmButton: 'btn btn-danger btn-lg',
+                    cancelButton: 'btn btn-secondary btn-lg'
+                },
+                buttonsStyling: false
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('deleteId').value = id;
+                    document.getElementById('deleteForm').submit();
+                }
+            });
+        }
+        
+        // Success/Error messages
+        @if (TempData["Success"] != null)
+        {
+            <text>
+            Swal.fire({
+                icon: 'success',
+                title: 'Başarılı!',
+                text: '@TempData["Success"]',
+                confirmButtonColor: '#28a745',
+                timer: 3000,
+                showConfirmButton: false
+            });
+            </text>
+        }
+        
+        @if (TempData["Error"] != null)
+        {
+            <text>
+            Swal.fire({
+                icon: 'error',
+                title: 'Hata!',
+                text: '@TempData["Error"]',
+                confirmButtonColor: '#dc3545'
+            });
+            </text>
+        }
+    </script>
+}

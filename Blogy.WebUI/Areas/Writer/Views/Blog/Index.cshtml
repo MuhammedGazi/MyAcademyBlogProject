@@ -1,0 +1,299 @@
+﻿@model List<ResultBlogDto>
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_WriterLayout.cshtml";
+}
+
+<div class="container-fluid px-4 py-4">
+    <!-- Header Section -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold text-dark mb-1">
+                <i class="fas fa-blog text-primary me-2"></i>
+                Blog Yönetimi
+            </h2>
+            <p class="text-muted mb-0">Tüm blog yazılarınızı buradan yönetin</p>
+        </div>
+        <a href="/Writer/Blog/CreateBlog" class="btn btn-primary btn-lg shadow-sm">
+            <i class="fas fa-plus me-2"></i>Yeni Blog Ekle
+        </a>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3 mb-3">
+            <div class="card border-0 shadow-sm bg-gradient-primary text-white">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-newspaper fa-2x opacity-75"></i>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <h3 class="mb-0 fw-bold">@Model.Count</h3>
+                            <p class="mb-0 opacity-75">Toplam Blog</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card border-0 shadow-sm bg-gradient-success text-white">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-eye fa-2x opacity-75"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card border-0 shadow-sm bg-gradient-warning text-white">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-folder fa-2x opacity-75"></i>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <h3 class="mb-0 fw-bold">@Model.Select(x => x.Category?.CategoryName).Distinct().Count()</h3>
+                            <p class="mb-0 opacity-75">Kategori</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card border-0 shadow-sm bg-gradient-info text-white">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-calendar fa-2x opacity-75"></i>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <h3 class="mb-0 fw-bold">@Model.Count(x => x.CreatedDate >= DateTime.Now.AddDays(-30))</h3>
+                            <p class="mb-0 opacity-75">Bu Ay</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter & Search Section -->
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <div class="input-group">
+                        <span class="input-group-text bg-white border-end-0">
+                            <i class="fas fa-search text-muted"></i>
+                        </span>
+                        <input type="text" class="form-control border-start-0" id="searchInput" placeholder="Blog ara...">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <select class="form-select" id="categoryFilter">
+                        <option value="">Tüm Kategoriler</option>
+                        @foreach (var category in Model.Select(x => x.Category?.CategoryName).Distinct().Where(x => !string.IsNullOrEmpty(x)))
+                        {
+                            <option value="@category">@category</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <select class="form-select" id="sortBy">
+                        <option value="newest">En Yeni</option>
+                        <option value="oldest">En Eski</option>
+                        <option value="views">En Çok Görüntülenen</option>
+                        <option value="title">Başlığa Göre</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Blog Cards -->
+    <div class="row" id="blogContainer">
+        @{
+            int count = 0;
+        }
+        @foreach (var item in Model)
+        {
+            count++;
+                <div class="card border-0 shadow-sm h-100 blog-item">
+                    <div class="position-relative">
+                        <img src="@item.CoverImage" class="card-img-top blog-image" alt="@item.Title" style="height: 220px; object-fit: cover;">
+                        <span class="position-absolute top-0 end-0 m-3 badge bg-success">
+                            @item.Category?.CategoryName
+                        </span>
+                    </div>
+                    <div class="card-body d-flex flex-column">
+                        <div class="mb-3">
+                            <h5 class="card-title fw-bold text-dark mb-2">@item.Title</h5>
+                            <p class="card-text text-muted small">
+                                @(item.Description.Length > 120 ? item.Description.Substring(0, 120) + "..." : item.Description)
+                            </p>
+                        </div>
+                        <div class="mt-auto">
+                            <div class="d-flex align-items-center text-muted small mb-3">
+                                <i class="fas fa-calendar me-2"></i>
+                                <span>@item.CreatedDate.ToString("dd MMM yyyy")</span>
+                                <i class="fas fa-user ms-3 me-2"></i>
+                                <span>@(item.Writer.FullName ?? "Admin")</span>
+                            </div>
+                            <div class="d-flex gap-2">
+                            <a href="/Writer/Blog/UpdateBlog/@item.Id" class="btn btn-sm btn-outline-primary flex-grow-1">
+                                    <i class="fas fa-edit me-1"></i>Düzenle
+                                </a>
+                            <a href="/Writer/Blog/GetComment/@item.Id" class="btn btn-sm btn-outline-primary flex-grow-1">
+                                <i class="fas fa-edit me-1"></i>Yorumlar
+                            </a>
+                                <button onclick="deleteBlog(@item.Id, '@item.Title')" class="btn btn-sm btn-outline-danger flex-grow-1">
+                                    <i class="fas fa-trash me-1"></i>Sil
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        }
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="text-center py-5">
+            <i class="fas fa-inbox fa-4x text-muted mb-3"></i>
+            <h5 class="text-muted">Henüz blog yazısı eklenmemiş</h5>
+            <p class="text-muted mb-4">Başlamak için yeni bir blog ekleyin</p>
+            <a href="/Writer/Blog/CreateBlog" class="btn btn-primary">
+                <i class="fas fa-plus me-2"></i>İlk Blogu Ekle
+            </a>
+        </div>
+    }
+</div>
+
+<style>
+    .bg-gradient-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+    .bg-gradient-success {
+        background: linear-gradient(135deg, #0ba360 0%, #3cba92 100%);
+    }
+
+    .bg-gradient-warning {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    }
+
+    .bg-gradient-info {
+        background: linear-gradient(135deg, #209cff 0%, #68e0cf 100%);
+    }
+
+    .blog-item {
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+
+        .blog-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15) !important;
+        }
+
+    .blog-image {
+        transition: transform 0.3s ease;
+    }
+
+    .blog-item:hover .blog-image {
+        transform: scale(1.05);
+    }
+
+    .btn {
+        transition: all 0.3s ease;
+    }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+    .form-control:focus, .form-select:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 0.25rem rgba(102, 126, 234, 0.25);
+    }
+
+    .card-title {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        min-height: 48px;
+    }
+</style>
+
+<script>
+    function deleteBlog(id, title) {
+        Swal.fire({
+            title: 'Emin misiniz?',
+            text: `"${title}" başlıklı blogu silmek istediğinizden emin misiniz?`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#dc3545',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Evet, Sil',
+            cancelButtonText: 'İptal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = '/Writer/Blog/DeleteBlog/' + id;
+            }
+        });
+    }
+
+    // Search Functionality
+    document.getElementById('searchInput').addEventListener('input', filterBlogs);
+    document.getElementById('categoryFilter').addEventListener('change', filterBlogs);
+    document.getElementById('sortBy').addEventListener('change', sortBlogs);
+
+    function filterBlogs() {
+        const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+        const categoryFilter = document.getElementById('categoryFilter').value;
+        const blogCards = document.querySelectorAll('.blog-card');
+
+        blogCards.forEach(card => {
+            const title = card.getAttribute('data-title');
+            const category = card.getAttribute('data-category');
+
+            const matchesSearch = title.includes(searchTerm);
+            const matchesCategory = !categoryFilter || category === categoryFilter;
+
+            if (matchesSearch && matchesCategory) {
+                card.style.display = 'block';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    }
+
+    function sortBlogs() {
+        const sortBy = document.getElementById('sortBy').value;
+        const container = document.getElementById('blogContainer');
+        const cards = Array.from(document.querySelectorAll('.blog-card'));
+
+        cards.sort((a, b) => {
+            switch(sortBy) {
+                case 'newest':
+                    return parseInt(b.getAttribute('data-date')) - parseInt(a.getAttribute('data-date'));
+                case 'oldest':
+                    return parseInt(a.getAttribute('data-date')) - parseInt(b.getAttribute('data-date'));
+                case 'views':
+                    return parseInt(b.getAttribute('data-views')) - parseInt(a.getAttribute('data-views'));
+                case 'title':
+                    return a.getAttribute('data-title').localeCompare(b.getAttribute('data-title'));
+                default:
+                    return 0;
+            }
+        });
+
+        cards.forEach(card => container.appendChild(card));
+    }
+</script>
+

@@ -1,0 +1,207 @@
+﻿@model ChangePasswordDto
+@{
+    ViewData["Title"] = "ChangePass";
+    Layout = "~/Views/Shared/_WriterLayout.cshtml";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+
+            <div class="card shadow-lg border-0 mb-4 animate__animated animate__fadeInDown">
+                <div class="card-body bg-gradient-security text-white rounded-3 p-4">
+                    <div class="d-flex align-items-center">
+                        <div class="bg-white bg-opacity-25 rounded-circle p-4 me-4">
+                            <i class="fas fa-lock fa-3x"></i>
+                        </div>
+                        <div>
+                            <h1 class="mb-2 fw-bold display-6">🔐 Şifre Güvenliği</h1>
+                            <p class="mb-0 opacity-75 fs-5">Hesap güvenliğiniz için güçlü bir şifre belirleyin</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-7 mb-4">
+                    <form asp-action="ChangePass" method="post">
+                        <input type="hidden" asp-for="UserId" />
+
+                        <div class="card border-0 shadow-lg h-100 animate__animated animate__fadeInLeft">
+                            <div class="card-header bg-white border-0 pt-4 pb-3">
+                                <h5 class="mb-0 fw-bold text-dark">
+                                    <i class="fas fa-key text-warning me-2"></i>Şifre Değiştir
+                                </h5>
+                            </div>
+                            <div class="card-body p-4">
+
+                                <div class="mb-4">
+                                    <label asp-for="CurrentPassword" class="form-label fw-bold text-muted small">MEVCUT ŞİFRE</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light border-0"><i class="fas fa-unlock text-muted"></i></span>
+                                        <input asp-for="CurrentPassword" type="password" class="form-control form-control-lg bg-light border-0 password-input" placeholder="••••••••">
+                                        <button class="btn btn-light border-0" type="button" onclick="togglePassword(this)">
+                                            <i class="fas fa-eye text-muted"></i>
+                                        </button>
+                                    </div>
+                                    <span asp-validation-for="CurrentPassword" class="text-danger small mt-1 d-block"></span>
+                                </div>
+
+                                <hr class="my-4 text-muted opacity-25">
+
+                                <div class="mb-3">
+                                    <label asp-for="NewPassword" class="form-label fw-bold text-muted small">YENİ ŞİFRE</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light border-0"><i class="fas fa-lock text-success"></i></span>
+                                        <input asp-for="NewPassword" type="password" class="form-control form-control-lg bg-light border-0 password-input" placeholder="Yeni şifreniz">
+                                        <button class="btn btn-light border-0" type="button" onclick="togglePassword(this)">
+                                            <i class="fas fa-eye text-muted"></i>
+                                        </button>
+                                    </div>
+                                    <span asp-validation-for="NewPassword" class="text-danger small mt-1 d-block"></span>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label asp-for="NewPassword" class="form-label fw-bold text-muted small">YENİ ŞİFRE (TEKRAR)</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light border-0"><i class="fas fa-check-circle text-success"></i></span>
+                                        <input asp-for="ConfirmPassword" type="password" class="form-control form-control-lg bg-light border-0 password-input" placeholder="Şifreyi doğrulayın">
+                                        <button class="btn btn-light border-0" type="button" onclick="togglePassword(this)">
+                                            <i class="fas fa-eye text-muted"></i>
+                                        </button>
+                                    </div>
+                                    <span asp-validation-for="ConfirmPassword" class="text-danger small mt-1 d-block"></span>
+                                </div>
+
+                                <div class="d-grid gap-2 mt-5">
+                                    <button type="submit" class="btn btn-warning btn-lg text-white shadow-sm hover-scale">
+                                        <i class="fas fa-save me-2"></i>Şifreyi Güncelle
+                                    </button>
+                                    <a href="/Writer/Profile/ProfileDetails" class="btn btn-outline-secondary shadow-sm">
+                                        <i class="fas fa-arrow-left me-2"></i>Profile Dön
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="col-lg-5">
+                    <div class="card border-0 shadow-lg mb-4 animate__animated animate__fadeInRight">
+                        <div class="card-body bg-gradient-info text-white rounded-3 p-4">
+                            <h5 class="fw-bold mb-3"><i class="fas fa-shield-alt me-2"></i>Güvenlik İpuçları</h5>
+                            <ul class="list-unstyled mb-0 opacity-90">
+                                <li class="mb-3 d-flex">
+                                    <i class="fas fa-check-circle me-3 mt-1"></i>
+                                    <span>Şifreniz en az <strong>6 karakter</strong> uzunluğunda olmalıdır.</span>
+                                </li>
+                                <li class="mb-3 d-flex">
+                                    <i class="fas fa-check-circle me-3 mt-1"></i>
+                                    <span>Tahmin edilmesi zor, karmaşık şifreler kullanın (Örn: A!2x9#).</span>
+                                </li>
+                                <li class="mb-3 d-flex">
+                                    <i class="fas fa-check-circle me-3 mt-1"></i>
+                                    <span>Doğum tarihi veya adınız gibi kişisel bilgiler içermemelidir.</span>
+                                </li>
+                                <li class="d-flex">
+                                    <i class="fas fa-check-circle me-3 mt-1"></i>
+                                    <span>Şifrenizi kimseyle paylaşmayın.</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="card border-0 shadow-sm animate__animated animate__fadeInUp" style="animation-delay: 0.2s;">
+                        <div class="card-body p-4 text-center">
+                            <i class="fas fa-user-secret fa-3x text-muted mb-3"></i>
+                            <h6 class="fw-bold text-dark">Son Değişiklik</h6>
+                            <p class="text-muted small mb-0">Şifrenizi en son 3 ay önce değiştirdiniz.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <style>
+        .bg-gradient-security {
+            background: linear-gradient(135deg, #f6d365 0%, #fda085 100%); /* Turuncu/Sarı tonları */
+        }
+
+        .bg-gradient-info {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); /* Mor tonları */
+        }
+
+        .form-control:focus {
+            background-color: #fff !important;
+            box-shadow: none;
+            border-color: #fda085;
+        }
+
+        .input-group:focus-within {
+            box-shadow: 0 0 0 0.25rem rgba(253, 160, 133, 0.25);
+            border-radius: 0.375rem;
+        }
+
+        .hover-scale {
+            transition: transform 0.2s;
+        }
+
+            .hover-scale:hover {
+                transform: scale(1.02);
+            }
+    </style>
+}
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        function togglePassword(btn) {
+            const input = btn.previousElementSibling;
+            const icon = btn.querySelector('i');
+
+            if (input.type === "password") {
+                input.type = "text";
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = "password";
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
+    </script>
+
+    <script>
+        @if (TempData["Error"] != null)
+        {
+                <text>
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Hata!',
+                    text: '@TempData["Error"]',
+                    confirmButtonColor: '#dc3545'
+                });
+                </text>
+        }
+        @if (TempData["Success"] != null)
+        {
+                <text>
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Başarılı!',
+                    text: '@TempData["Success"]',
+                    confirmButtonColor: '#28a745'
+                });
+                </text>
+        }
+    </script>
+}
+

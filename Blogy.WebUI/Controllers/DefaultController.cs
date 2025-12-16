@@ -8,5 +8,17 @@ namespace Blogy.WebUI.Controllers
         {
             return View();
         }
+
+        [HttpGet]
+        public IActionResult Contact()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult Contact(int id)
+        {
+            return View();
+        }
     }
 }

@@ -15,6 +15,7 @@ namespace Blogy.Business.Mappings
             //ResultUserDto içinde FullName için işlem yapacağımı bunun içine de appuserde gelen firstname ve lastname yi birleştir maple diyoruz
 
             CreateMap<AppUser, EditProfileDto>().ReverseMap();
+            CreateMap<AppUser, ResultUserDto>().ReverseMap();
         }
     }
 }

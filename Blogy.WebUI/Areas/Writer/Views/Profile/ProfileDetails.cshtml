@@ -1,0 +1,226 @@
+﻿@model EditProfileDto
+@{
+    ViewData["Title"] = "ProfileDetails";
+    Layout = "~/Views/Shared/_WriterLayout.cshtml";
+}
+
+<div class="container py-5">
+    <form asp-action="ProfileDetails" method="post" enctype="multipart/form-data">
+        
+        <input type="hidden" asp-for="UserId" />
+        <input type="hidden" asp-for="ImageUrl" />
+
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                
+                <div class="card shadow-lg border-0 mb-4 animate__animated animate__fadeInDown">
+                    <div class="card-body bg-gradient-profile text-white rounded-3 p-4">
+                        <div class="d-flex align-items-center">
+                            <div class="bg-white bg-opacity-25 rounded-circle p-4 me-4">
+                                <i class="fas fa-user-edit fa-3x"></i>
+                            </div>
+                            <div>
+                                <h1 class="mb-2 fw-bold display-6">✏️ Profili Düzenle</h1>
+                                <p class="mb-0 opacity-75 fs-5">Bilgilerinizi güncelleyin ve kaydedin</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-4 mb-4">
+                        <div class="card border-0 shadow-lg h-100 animate__animated animate__fadeInLeft">
+                            <div class="card-body text-center p-4">
+                                <div class="profile-image-container mb-4">
+                                    <img id="imgPreview" src="@(!string.IsNullOrEmpty(Model.ImageUrl) ? Model.ImageUrl : "/images/default-user.png")" 
+                                         alt="Profile" class="profile-image rounded-circle shadow-lg" 
+                                         style="object-fit: cover; cursor: pointer;" 
+                                         onclick="document.getElementById('fileInput').click();">
+                                    
+                                    <div class="mt-3">
+                                        <label for="fileInput" class="btn btn-sm btn-outline-primary rounded-pill px-4">
+                                            <i class="fas fa-camera me-2"></i>Fotoğrafı Değiştir
+                                        </label>
+                                        <input type="file" asp-for="ImageFile" id="fileInput" class="d-none" accept="image/*" onchange="previewImage(this)">
+                                    </div>
+                                </div>
+
+                                <div class="alert alert-light border small text-muted">
+                                    <i class="fas fa-info-circle me-1"></i>Değiştirmek için fotoğrafa veya butona tıklayın.
+                                </div>
+
+                                <div class="mt-4">
+                                    <span class="badge bg-primary badge-glow px-3 py-2">
+                                        <i class="fas fa-id-badge me-2"></i>ID: @Model.UserId
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-8 mb-4">
+                        <div class="card border-0 shadow-lg animate__animated animate__fadeInRight">
+                            <div class="card-header bg-white border-0 pt-4 pb-3">
+                                <h5 class="mb-0 fw-bold">
+                                    <i class="fas fa-edit text-primary me-2"></i>Bilgileri Düzenle
+                                </h5>
+                            </div>
+                            <div class="card-body p-4">
+                                <div class="row g-4">
+                                    
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label asp-for="FirtName" class="text-muted small mb-2 fw-bold">
+                                                <i class="fas fa-user text-primary me-2"></i>Ad
+                                            </label>
+                                            <input asp-for="FirtName" class="form-control form-control-lg bg-light border-0" placeholder="Adınız" />
+                                            <span asp-validation-for="FirtName" class="text-danger small"></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label asp-for="LastName" class="text-muted small mb-2 fw-bold">
+                                                <i class="fas fa-user text-success me-2"></i>Soyad
+                                            </label>
+                                            <input asp-for="LastName" class="form-control form-control-lg bg-light border-0" placeholder="Soyadınız" />
+                                            <span asp-validation-for="LastName" class="text-danger small"></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label asp-for="UserName" class="text-muted small mb-2 fw-bold">
+                                                <i class="fas fa-at text-info me-2"></i>Kullanıcı Adı
+                                            </label>
+                                            <input asp-for="UserName" class="form-control form-control-lg bg-light border-0" />
+                                            <span asp-validation-for="UserName" class="text-danger small"></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label asp-for="Title" class="text-muted small mb-2 fw-bold">
+                                                <i class="fas fa-briefcase text-warning me-2"></i>Ünvan
+                                            </label>
+                                            <input asp-for="Title" class="form-control form-control-lg bg-light border-0" placeholder="Örn: Yazılım Mühendisi" />
+                                            <span asp-validation-for="Title" class="text-danger small"></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label asp-for="Email" class="text-muted small mb-2 fw-bold">
+                                                <i class="fas fa-envelope text-danger me-2"></i>E-posta
+                                            </label>
+                                            <input asp-for="Email" type="email" class="form-control form-control-lg bg-light border-0" />
+                                            <span asp-validation-for="Email" class="text-danger small"></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label asp-for="PhoneNumber" class="text-muted small mb-2 fw-bold">
+                                                <i class="fas fa-phone text-purple me-2"></i>Telefon
+                                            </label>
+                                            <input asp-for="PhoneNumber" class="form-control form-control-lg bg-light border-0" placeholder="0555..." />
+                                            <span asp-validation-for="PhoneNumber" class="text-danger small"></span>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card border-0 shadow-lg animate__animated animate__fadeInUp">
+                            <div class="card-body p-4">
+                                <div class="row g-3">
+                                    <div class="col-md-8">
+                                        <button type="submit" class="btn btn-success btn-lg w-100 shadow-sm btn-action text-white">
+                                            <i class="fas fa-save me-2"></i>Değişiklikleri Kaydet
+                                        </button>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <a href="/Writer/Profile/Index" class="btn btn-outline-secondary btn-lg w-100 shadow-sm btn-action">
+                                            <i class="fas fa-times me-2"></i>İptal
+                                        </a>
+                                        <a href="/Writer/Profile/ChangePass" class="btn btn-outline-secondary btn-lg w-100 shadow-sm btn-action">
+                                            Şifre Değiştir
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Styles {
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <style>
+        .bg-gradient-profile { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        
+        .profile-image {
+            width: 180px; height: 180px; object-fit: cover;
+            border: 5px solid #fff; transition: all 0.3s ease;
+        }
+        .profile-image:hover { opacity: 0.9; transform: scale(1.02); }
+        
+        /* Form Focus Efektleri */
+        .form-control:focus {
+            background-color: #fff !important;
+            border: 1px solid #667eea !important;
+            box-shadow: 0 0 0 0.25rem rgba(102, 126, 234, 0.25);
+        }
+
+        .badge-glow {
+            box-shadow: 0 0 20px rgba(102, 126, 234, 0.5);
+            animation: glow 2s ease-in-out infinite;
+        }
+        @@keyframes glow {
+            0%, 100% { box-shadow: 0 0 20px rgba(102, 126, 234, 0.5); }
+            50% { box-shadow: 0 0 30px rgba(102, 126, 234, 0.8); }
+        }
+    </style>
+}
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <script>
+        // Fotoğraf seçildiğinde anlık önizleme yapan script
+        function previewImage(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('imgPreview').src = e.target.result;
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+    </script>
+
+    <script>
+        @if (TempData["Error"] != null)
+        {
+            <text>
+            Swal.fire({
+                icon: 'error',
+                title: 'Hata!',
+                text: '@TempData["Error"]',
+                confirmButtonColor: '#dc3545'
+            });
+            </text>
+        }
+    </script>
+}

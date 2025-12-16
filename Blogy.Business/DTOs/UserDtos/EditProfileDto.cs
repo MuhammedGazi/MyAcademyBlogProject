@@ -4,6 +4,7 @@ namespace Blogy.Business.DTOs.UserDtos
 {
     public class EditProfileDto
     {
+        public int UserId { get; set; }
         public string FirtName { get; set; }
         public string LastName { get; set; }
         public string UserName { get; set; }

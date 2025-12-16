@@ -11,6 +11,11 @@ namespace Blogy.DataAccess.Repositories.BlogRepositories
         {
         }
 
+        public async Task<List<Blog>> GetBlogsByWriterIdAsync(int id)
+        {
+            return await _table.Where(x => x.WriterId == id).ToListAsync();
+        }
+
         public async Task<List<Blog>> GetBlogsWithCategoriesAsync()
         {
             return await _table.Include(x => x.Category).ToListAsync();

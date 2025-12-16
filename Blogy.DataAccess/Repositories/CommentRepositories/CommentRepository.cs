@@ -1,6 +1,7 @@
 ﻿using Blogy.DataAccess.Context;
 using Blogy.DataAccess.Repositories.GenericRepositories;
 using Blogy.Entity.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace Blogy.DataAccess.Repositories.CommentRepositories
 {
@@ -8,6 +9,11 @@ namespace Blogy.DataAccess.Repositories.CommentRepositories
     {
         public CommentRepository(AppDbContext context) : base(context)
         {
+        }
+
+        public async Task<List<Comment>> GetCommentByBlogId(int id)
+        {
+            return await _table.Where(x => x.BlogId == id).ToListAsync();
         }
     }
 }
