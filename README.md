@@ -30,7 +30,7 @@
 | Özellik | Açıklama | Teknoloji |
 | :--- | :--- | :--- |
 | **🤖 AI Moderasyon** | Yorumlar Gemini API ile analiz edilir, "Toxic" içerik engellenir. | `Google Generative AI` |
-| **🏗️ N-Tier Mimari** | Sürdürülebilir, gevşek bağlı (loosely coupled) profesyonel yapı. | `Clean Architecture` |
+| **🏗️ N-Tier Mimari** | Sürdürülebilir, gevşek bağlı (loosely coupled) profesyonel yapı. | `N-Tier Architecture` |
 | **👥 Rol Yönetimi** | **Admin** (Tam Yetki) ve **Writer** (İçerik Üretici) panelleri ayrılmıştır. | `ASP.NET Identity` & `Areas` |
 | **🎨 Modern Arayüz** | ViewComponent yapısı ile modüler ve şık frontend tasarımı. | `Bootstrap 5` & `Razor` |
 
