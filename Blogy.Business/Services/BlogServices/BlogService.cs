@@ -56,7 +56,7 @@ namespace Blogy.Business.Services.BlogServices
 
         public async Task<List<ResultBlogDto>> GetLast5BlogsAsync()
         {
-            var values = await _blogRepository.GetLast3BlogsAsync();
+            var values = await _blogRepository.GetLast5BlogsAsync();
             return _mapper.Map<List<ResultBlogDto>>(values);
         }
 

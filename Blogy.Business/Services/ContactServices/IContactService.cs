@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Blogy.Business.DTOs.ContactDtos;
 
 namespace Blogy.Business.Services.ContactServices
 {
-    public interface IContactService:IGenericService<>
+    public interface IContactService : IGenericService<CreateContactDto, UpdateContactDto, ResultContactDto>
     {
     }
 }

@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Blogy.Business.DTOs.ContactDtos;
+using Blogy.Business.Services.ContactServices;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Blogy.WebUI.Controllers
 {
-    public class DefaultController : Controller
+    public class DefaultController(IContactService _contactService) : Controller
     {
         public IActionResult Index()
         {
@@ -16,7 +18,14 @@ namespace Blogy.WebUI.Controllers
         }
 
         [HttpPost]
-        public IActionResult Contact(int id)
+        public async Task<IActionResult> Contact(CreateContactDto dto)
+        {
+            await _contactService.CreateAsync(dto);
+            return RedirectToAction(nameof(Contact));
+        }
+
+        [HttpGet]
+        public IActionResult About()
         {
             return View();
         }

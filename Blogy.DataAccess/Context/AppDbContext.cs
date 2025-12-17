@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Blogy.DataAccess.Context;
 
-public class AppDbContext:IdentityDbContext<AppUser,AppRole,int>
+public class AppDbContext : IdentityDbContext<AppUser, AppRole, int>
 {
-    public AppDbContext(DbContextOptions options):base(options)
+    public AppDbContext(DbContextOptions options) : base(options)
     {
     }
 
@@ -16,4 +16,5 @@ public class AppDbContext:IdentityDbContext<AppUser,AppRole,int>
     public DbSet<Social> Socials { get; set; }
     public DbSet<Tag> Tags { get; set; }
     public DbSet<Comment> Comment { get; set; }
+    public DbSet<Contact> Contacts { get; set; }
 }

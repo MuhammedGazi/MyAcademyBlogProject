@@ -1,4 +1,4 @@
-﻿
+﻿@model CreateContactDto
 @{
     ViewData["Title"] = "Contact";
     Layout = "~/Views/UILayout/Index.cshtml";
@@ -41,7 +41,7 @@
             </div>
 
             <div class="col-lg-8" data-aos="fade-up" data-aos-delay="200">
-                <form method="post" asp-action="SendMessage" asp-controller="Contact">
+                <form method="post" asp-action="Contact" asp-controller="Default">
                     <div class="row">
                         <div class="col-6 mb-3">
                             <input type="text" class="form-control" asp-for="Name" placeholder="Adınız Soyadınız">

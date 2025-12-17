@@ -1,0 +1,110 @@
+﻿@model List<ResultContactDto>
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="container-fluid py-5" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh;">
+    <div class="container">
+        <!-- Header -->
+        <div class="mb-5">
+            <h1 class="display-4 fw-bold text-white mb-2">
+                <i class="fas fa-envelope me-3"></i>Gelen Mesajlar
+            </h1>
+            <p class="text-white-50">Toplam @Model.Count() mesaj</p>
+        </div>
+
+        @if (!Model.Any())
+        {
+            <!-- Boş Durum -->
+            <div class="text-center py-5">
+                <div class="mb-4">
+                    <i class="fas fa-inbox" style="font-size: 4rem; color: rgba(255,255,255,0.3);"></i>
+                </div>
+                <h4 class="text-white">Henüz mesaj yok</h4>
+                <p class="text-white-50">Mesajlar burada görünecek</p>
+            </div>
+        }
+        else
+        {
+            <!-- Mesajlar Grid'i -->
+            <div class="row g-4">
+                @foreach (var contact in Model)
+                {
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card h-100 border-0 shadow-sm transition-all" style="background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); border-radius: 12px; overflow: hidden; cursor: pointer; transition: all 0.3s ease;">
+
+                            <!-- Başlık Alanı -->
+                            <div class="card-header border-0" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 20px;">
+                                <h5 class="card-title text-white mb-1">
+                                    <i class="fas fa-user-circle me-2"></i>@contact.Name
+                                </h5>
+                                <small class="text-white-50">
+                                    <i class="fas fa-envelope me-1"></i>@contact.Email
+                                </small>
+                            </div>
+
+                            <!-- İçerik Alanı -->
+                            <div class="card-body">
+                                <!-- Konu -->
+                                <div class="mb-3">
+                                    <span class="badge bg-info text-dark" style="font-size: 0.85rem; padding: 6px 12px;">
+                                        <i class="fas fa-tag me-1"></i>@contact.Subject
+                                    </span>
+                                </div>
+
+                                <!-- Mesaj -->
+                                <p class="card-text text-muted" style="font-size: 0.95rem; line-height: 1.6; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">
+                                    @contact.Message
+                                </p>
+                            </div>
+
+                            <!-- Footer -->
+                            <div class="card-footer bg-light border-top-0" style="background-color: rgba(0,0,0,0.02) !important;">
+                                <small class="text-muted">
+                                    <i class="fas fa-info-circle me-1"></i>Mesaj göz önünde
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</div>
+
+<style>
+    .transition-all:hover {
+        transform: translateY(-8px) !important;
+        box-shadow: 0 15px 40px rgba(102, 126, 234, 0.3) !important;
+    }
+
+    .card-text {
+        min-height: 60px;
+    }
+
+    .badge {
+        font-weight: 600;
+        letter-spacing: 0.3px;
+    }
+
+    @@media (max-width: 768px) {
+        .display-4
+
+    {
+        font-size: 2rem;
+    }
+
+    .container-fluid {
+        padding-top: 2rem !important;
+        padding-bottom: 2rem !important;
+    }
+
+    }
+
+    /* Scroll smooth */
+    html {
+        scroll-behavior: smooth;
+    }
+</style>
+

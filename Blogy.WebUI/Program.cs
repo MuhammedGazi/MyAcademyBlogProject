@@ -1,10 +1,14 @@
 using Blogy.Business.Extensions;
+using Blogy.Business.Services.AiServices;
 using Blogy.DataAccess.Extensions;
 using Blogy.WebUI.Filters;
+using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+
+builder.Services.AddHttpClient<IGeminiAiService, GeminiAiService>();
 
 builder.Services.AddServicesExt();
 builder.Services.AddRepositoriesExt(builder.Configuration);

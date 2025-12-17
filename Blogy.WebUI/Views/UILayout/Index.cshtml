@@ -40,6 +40,7 @@
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 	@await RenderSectionAsync("Styles", required: false)
 </head>
 <body>
@@ -69,9 +70,10 @@
 
 							<ul class="js-clone-nav d-none d-lg-inline-block text-start site-menu mx-auto">
 								<li class="active"><a href="/Default/Index">Ana Sayfa</a></li>
-								<li><a href="#">Hakkımızda</a></li>
+								<li><a href="/Default/About">Hakkımızda</a></li>
 								<li><a href="/Blog/Index">Bloglar</a></li>
-								<li><a href="#">İletişim</a></li>
+								<li><a href="/Default/Contact">İletişim</a></li>
+								<li><a href="/Login/Index">Giriş Yap</a></li>
 							</ul>
 						</div>
 						<div class="col-2 text-end">
@@ -113,6 +115,6 @@
 	<script src="~/blogy-1.0.0/js/counter.js"></script>
 	<script src="~/blogy-1.0.0/js/custom.js"></script>
 
-
+	@await RenderSectionAsync("Script", required: false)
 </body>
 </html>
